@@ -91,5 +91,5 @@ ax.legend()
 ax.set_title(title_of_chart)
 
 fig.savefig(rysunek_nazwa)
-fig.show()
+plt.show()
 
