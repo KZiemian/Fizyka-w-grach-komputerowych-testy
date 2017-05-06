@@ -45,10 +45,17 @@ x_lista = []
 
 
 with open(plik_nazwa) as plik:
-    title_of_chart = plik.readline().strip()
+    title_of_chart = plik.readline()
     rysunek_nazwa = plik.readline().strip()
-    plik.readline()
+    nazwy_liczb = plik.readline().split()
     liczby_lista = plik.readline().split()
+
+    for i in xrange(len(nazwy_liczb)):
+        title_of_chart += nazwy_liczb[i].strip() \
+                      + " = " + liczby_lista[i].strip() + ", "
+
+    title_of_chart += "\n"
+
     t_0, t_1 = float(liczby_lista[0]), float(liczby_lista[1])
     plik.readline()
 
@@ -62,17 +69,23 @@ with open(plik_nazwa) as plik:
 min_value = min(x_lista)
 max_value = max(x_lista)
 
-plt.plot(t_lista, x_lista, color = 'r', label = 'numer')
 
-plt.xlim(t_0 - margines_1, t_1 + margines_1)
-plt.ylim(min_value - margines_1, max_value + margines_1)
+fig = plt.figure()
+fig.subplots_adjust(top = 0.8)
+ax = fig.add_subplot(111)
 
-plt.xlabel('t[s]')
-plt.ylabel('x[m]')
+ax.plot(t_lista, x_lista, color = 'r', label = 'numer')
 
-plt.legend()
-plt.title(title_of_chart)
+ax.set_xlim(t_0 - margines_1, t_1 + margines_1)
+ax.set_ylim(min_value - margines_1, max_value + margines_1)
 
-plt.savefig(rysunek_nazwa)
-plt.show()
+ax.set_xlabel('t[s]')
+ax.set_ylabel('x[m]')
+
+ax.legend()
+# print title_of_chart
+ax.set_title(title_of_chart)
+
+fig.savefig(rysunek_nazwa)
+fig.show()
 
