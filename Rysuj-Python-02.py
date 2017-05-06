@@ -8,10 +8,11 @@ danych z pliku Wynik-numer_pliku.txt.
 
 Plik z danymi ma mieć następującą postać.
 Pierwsza zawiera (jakiś) opis danych, który posłuży za tytuł rysunku.
-Druga linia zawiera opis danych z następnej linii, np. początek i koniec
+Druga zawiera nazwę rysunku jaki ma powstać.
+Trzecia linia zawiera opis danych z następnej linii, np. początek i koniec
 przedziału całkowania numerycznego.
-Trzecia zawiera wyżej opisane dane.
-W czwartej jest opis danych numerycznych.
+Czwarta zawiera wyżej opisane dane.
+W piątej jest opis danych numerycznych.
 
 Dalej są dane w formacie
 czas    dane numeryczne    dane analityczne."""
