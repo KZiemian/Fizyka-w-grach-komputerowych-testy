@@ -6,14 +6,15 @@ u"""Rysuje wyniki numerycznego rozwiązywania równań różniczkowych na podsta
 danych z pliku Wynik-numer_pliku.txt.
 
 Plik z danymi ma mieć następującą postać.
-Pierwsza zawiera (jakiś) opis danych, który posłuży za tytuł rysunku.
-Druga zawiera nazwę pliku z wykresem, jaki ma zostać utworzony.
-Trzecia linia zawiera opis danych z następnej linii, np. początek i koniec
+1 linia = opis zawartości pliku.
+2 linia = tytuł wykresu który zostanie utworzony.
+3 linia = nazwa pliku z wykresem jaki zostać utworzony.
+4 linia = linia zawiera opis danych z następnej linii, np. początek i koniec
 przedziału całkowania numerycznego.
-Czwarta zawiera wyżej opisane dane.
-W piątej jest opis danych numerycznych.
+5 linia = zawiera dane opisane w linii wyżej.
+6 linia = opis wyników numerycznych
 
-Dalej są dane w formacie
+Dalej są wyniki numeryczne w formacie
 czas    dane numeryczne."""
 
 
@@ -25,56 +26,64 @@ import matplotlib.pyplot as plt
 ######################################################################
 
 
-
-numer_pliku = 1
-# Numer pliku z którego będą sczytywane dane
-numer_rysunku = 3
-# Numer rysunku który powstanie.
-
-string_num_pliku = str(numer_pliku).zfill(2)
-string_num_rysunku = str(numer_rysunku).zfill(2)
-
-plik_nazwa = 'Wynik-%s.txt' % string_num_pliku
+# Numer pliku z którego będą wczytywane dane.
+numer_plik = 1
+str_num_plik = str(numer_plik).zfill(2)
 
 
+# Nazwa pliku który zostanie otworzony.
+plik_nazwa = 'Wyniki-%s.txt' % str_num_plik
+
+
+# Marginesy służą ,,poprawianiu'' wyglądu wykresu.
 margines_1 = 0.2
 
 
-t_lista = []
-x_lista = []
+t_list = []
+x_list = []
 
 
 with open(plik_nazwa) as plik:
-    title_of_chart = plik.readline()
-    rysunek_nazwa = plik.readline().strip()
-    nazwy_liczb = plik.readline().split()
-    liczby_lista = plik.readline().split()
-
-    for i in xrange(len(nazwy_liczb)):
-        title_of_chart += nazwy_liczb[i].strip() \
-                      + " = " + liczby_lista[i].strip() + ", "
-
-    title_of_chart += "\n"
-
-    t_0, t_1 = float(liczby_lista[0]), float(liczby_lista[1])
     plik.readline()
+    # Tytuł jaki zostanie nadany wykresowi.
+    tytul_wykresu = plik.readline()
+    # Nazwa pliku w którym zostanie utworzony rysunek.
+    nazwa_rys_plik = plik.readline().strip()
+    # Tworzy listę opisów parametrów opisu, dzięki której zostanie utworzona
+    # dalsza część opisu. Opisy parametrów muszą być oddzielonym innym znakiem
+    # niż spacja (bo we wzorach matematycznych jest ich dużo). W tym wypadku
+    # jest to znak ,,\t''.
+    param_opis_list = plik.readline().split('\t')
+    # Lista parametrów rozwiązania numerycznego.
+    param_wart_list = plik.readline().split()
+
+    t_0, t_1 = float(param_wart_list[0]), float(param_wart_list[1])
+    plik.readline()
+
+    print param_opis_list
+    print param_wart_list
+    for i in xrange(len(param_opis_list)):
+        tytul_wykresu += param_opis_list[i].strip() \
+                         + " = " + param_wart_list[i].strip() + ", "
+
+    tytul_wykresu += "\n"
 
     for linia in plik:
         dane_z_pliku = linia.split()
-        t_lista.append(float(dane_z_pliku[0]))
-        x_lista.append(float(dane_z_pliku[1]))
+        t_list.append(float(dane_z_pliku[0]))
+        x_list.append(float(dane_z_pliku[1]))
 
 
 
-min_value = min(x_lista)
-max_value = max(x_lista)
+min_value = min(x_list) # Minimalna wartość wyników.
+max_value = max(x_list) # Maksymalna wartość wyników.
 
 
 fig = plt.figure()
 fig.subplots_adjust(top = 0.8)
 ax = fig.add_subplot(111)
 
-ax.plot(t_lista, x_lista, color = 'r', label = 'numer')
+ax.plot(t_list, x_list, color = 'r', label = 'numer')
 
 ax.set_xlim(t_0 - margines_1, t_1 + margines_1)
 ax.set_ylim(min_value - margines_1, max_value + margines_1)
@@ -83,9 +92,7 @@ ax.set_xlabel('t[s]')
 ax.set_ylabel('x[m]')
 
 ax.legend()
-# print title_of_chart
-ax.set_title(title_of_chart)
+ax.set_title(tytul_wykresu)
 
-fig.savefig(rysunek_nazwa)
-fig.show()
-
+fig.savefig(nazwa_rys_plik)
+plt.show()
