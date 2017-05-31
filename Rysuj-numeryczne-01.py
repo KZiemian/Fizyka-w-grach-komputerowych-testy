@@ -22,7 +22,7 @@ matematyczne w opisie.
 10 linia = opis tabel zawierających rezultat obliczeń numerycznych.
 
 Dalej mają znajdować się wyniki obliczeń numerycznych w formacie
-czas    położenie"""
+czas    numeryczne rozwiązanie"""
 
 
 
@@ -31,6 +31,7 @@ czas    położenie"""
 import matplotlib.pyplot as plt
 
 ######################################################################
+
 
 
 ##############################
@@ -51,8 +52,8 @@ margines_1 = 0.2
 ##############################
 # Pobieranie danych z pliku.
 
-t_list = []
-x_list = []
+t_list = [] # Lista dla wartości czasu
+x_list = [] # Lista dla obliczonych numerycznie wartości rozwiązania
 
 
 with open(plik_num_wyn) as plik:
@@ -60,10 +61,10 @@ with open(plik_num_wyn) as plik:
     # Pewnie jest bardziej eleganckie rozwiązanie.
     plik.readline()
     plik.readline()
-    # Tytuł jaki zostanie nadany wykresowi.
+    # Tytuł jaki zostanie nadany wykresowi
     tytul_wykresu = plik.readline()
     plik.readline()
-    # Nazwa pliku w którym zostanie utworzony rysunek (nazwa_rysunku_plik).
+    # Nazwa pliku w którym zostanie utworzony rysunek (nazwa_rysunku_plik)
     nazwa_rys_plik = plik.readline().strip()
     plik.readline()
 
@@ -80,7 +81,7 @@ with open(plik_num_wyn) as plik:
     # parametry_wartosci_lista
     param_wart_list = plik.readline().split()
 
-    # Wczytuję początek i koniec przedziału całkowania numerycznego.
+    # Wczytuję początek i koniec przedziału całkowania numerycznego
     t_0, t_1 = float(param_wart_list[0]), float(param_wart_list[1])
     plik.readline()
 
@@ -89,10 +90,11 @@ with open(plik_num_wyn) as plik:
         tytul_wykresu += param_opis_list[i].strip() \
                          + " = " + param_wart_list[i].strip() + ", "
 
-    # Po wykonaniu pętli, dodajemy znak pustej linii.
+    # Po wykonaniu pętli, dodajemy znak pustej linii
     tytul_wykresu += "\n"
 
 
+    # Pętla zbierająca dane
     for linia in plik:
         dane_z_pliku = linia.split()
         t_list.append(float(dane_z_pliku[0]))
