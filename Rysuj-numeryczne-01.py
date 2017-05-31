@@ -2,20 +2,27 @@
 # -*- coding: utf-8 -*-
 
 
-u"""Rysuje wyniki numerycznego rozwiązywania równań różniczkowych na podstawie
-danych z pliku Wynik-numer_pliku.txt.
+u"""Rysuje numeryczne rozwiązanie równań różniczkowych zwyczajnych
+na podstawie danych z pliku plik_num_wyn.
 
-Plik z danymi ma mieć następującą postać.
-1 linia = opis zawartości pliku.
-2 linia = tytuł wykresu który zostanie utworzony.
-3 linia = nazwa pliku z wykresem jaki zostać utworzony.
-4 linia = linia zawiera opis danych z następnej linii, np. początek i koniec
-przedziału całkowania numerycznego.
-5 linia = zawiera dane opisane w linii wyżej.
-6 linia = opis wyników numerycznych
+Aby skrypt zadziałał plik_num_dane musi mieć następujący format.
+1 linia = opis problemu którego wyniki dotyczą.
+2 linia = pusta
+3 linia = tytuł wykresu który zostanie utworzony prze matplotliba.
+4 linia = pusta.
+5 linia = nazwa pliku w którym zostanie zapisany wykres.
+6 linia = pusta.
+7 linia = zawiera opis parametrów rozwiązania, które znajdują się
+w następnej linii. Dwa pierwsze są obowiązkowe, są to początek i koniec
+przedziału całkowania numerycznego, pozostałe są opcjonalne.
+Opis ma być w formacie LaTeXa, ty by dało się wygenerować ładne wzory
+matematyczne w opisie.
+8 linia = zawiera liczbowe wartość parametrów opisanych wyżej.
+9 linia = pusta.
+10 linia = opis tabel zawierających rezultat obliczeń numerycznych.
 
-Dalej są wyniki numeryczne w formacie
-czas    dane numeryczne."""
+Dalej mają znajdować się wyniki obliczeń numerycznych w formacie
+czas    położenie"""
 
 
 
@@ -26,47 +33,65 @@ import matplotlib.pyplot as plt
 ######################################################################
 
 
-# Numer pliku z którego będą wczytywane dane.
-numer_plik = 1
-str_num_plik = str(numer_plik).zfill(2)
+##############################
+# Tworzenie nazwy pliku plik_num_wyn (plik_numeryczne_wyniki).
+# W tym przypadku nazwy plików różnią się tylko numerem, więc najprościej
+# zrobić to tak.
+
+num_plik = 1 # num_plik = numer_pliku
+
+plik_num_wyn = 'Wyniki-num-%s.txt' % str(num_plik).zfill(2)
 
 
-# Nazwa pliku który zostanie otworzony.
-plik_nazwa = 'Wyniki-%s.txt' % str_num_plik
 
-
-# Marginesy służą ,,poprawianiu'' wyglądu wykresu.
+# Marginesy służące poprawieniu wyglądu wykresu.
 margines_1 = 0.2
 
+
+##############################
+# Pobieranie danych z pliku.
 
 t_list = []
 x_list = []
 
 
-with open(plik_nazwa) as plik:
+with open(plik_num_wyn) as plik:
+    # Dużo lini w pliku jest pustych, aby je przejść po prostu je czytam.
+    # Pewnie jest bardziej eleganckie rozwiązanie.
+    plik.readline()
     plik.readline()
     # Tytuł jaki zostanie nadany wykresowi.
     tytul_wykresu = plik.readline()
-    # Nazwa pliku w którym zostanie utworzony rysunek.
+    plik.readline()
+    # Nazwa pliku w którym zostanie utworzony rysunek (nazwa_rysunku_plik).
     nazwa_rys_plik = plik.readline().strip()
-    # Tworzy listę opisów parametrów opisu, dzięki której zostanie utworzona
-    # dalsza część opisu. Opisy parametrów muszą być oddzielonym innym znakiem
-    # niż spacja (bo we wzorach matematycznych jest ich dużo). W tym wypadku
-    # jest to znak ,,\t''.
-    param_opis_list = plik.readline().split('\t')
-    # Lista parametrów rozwiązania numerycznego.
+    plik.readline()
+
+
+    u"""Na podstawie wczytanych lini tworzy opis parametrów wyników
+    numerycznych, który zostanie dołączony do tytul_wykresu i tym samym
+    będą widoczne w tytule wykresu.
+
+    Aby ten kod działa, poszczególne członu muszę być oddzielone 4 SPACJAMI.
+    Wynika to z tego, że w kodzie LaTeXa jest dużo białych znaków,
+    więc czysty split robija wyrażenia matematyczne."""
+    # parametry_opis_lista
+    param_opis_list = plik.readline().split("    ")
+    # parametry_wartosci_lista
     param_wart_list = plik.readline().split()
 
+    # Wczytuję początek i koniec przedziału całkowania numerycznego.
     t_0, t_1 = float(param_wart_list[0]), float(param_wart_list[1])
     plik.readline()
 
-    print param_opis_list
-    print param_wart_list
+    # Pętla która dodaje nowe człony do tytulu_wykresu
     for i in xrange(len(param_opis_list)):
         tytul_wykresu += param_opis_list[i].strip() \
                          + " = " + param_wart_list[i].strip() + ", "
 
+    # Po wykonaniu pętli, dodajemy znak pustej linii.
     tytul_wykresu += "\n"
+
 
     for linia in plik:
         dane_z_pliku = linia.split()
@@ -74,10 +99,15 @@ with open(plik_nazwa) as plik:
         x_list.append(float(dane_z_pliku[1]))
 
 
-
+# Te zmienne wraz ze zmiennymi margines_* służą do poprawienia wyglądu
+# wykresu.
 min_value = min(x_list) # Minimalna wartość wyników.
 max_value = max(x_list) # Maksymalna wartość wyników.
 
+
+
+##############################
+# Rysujemy wykres.
 
 fig = plt.figure()
 fig.subplots_adjust(top = 0.8)
