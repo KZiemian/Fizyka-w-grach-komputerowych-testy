@@ -111,7 +111,8 @@ max_value = max(max(x_list), max(anal_list)) # Maksymalna wartość wyników
 
 
 ##############################
-# Rysujemy wykres.
+# Rysujemy wykres
+
 fig = plt.figure()
 fig.subplots_adjust(top = 0.8)
 ax = fig.add_subplot(111)
